@@ -2,6 +2,10 @@
 
 <PageTitle>NCQA</PageTitle>
 
+@using Core.Domain
+@using Core.Services
+@inject IJSONPlaceHolderService jsonPlaceHolderService
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -9,7 +13,7 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <a href="/user">@_user?.Name</a>
         </div>
 
         <article class="content px-4">
@@ -17,3 +21,18 @@
         </article>
     </main>
 </div>
+
+@code{
+    private User? _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+       await GetUser(); 
+    }
+
+    private async Task GetUser()
+    {
+        var result = await jsonPlaceHolderService.GetUserAsync(1);
+        _user = await result.Content.ReadFromJsonAsync<User>();
+    }
+}

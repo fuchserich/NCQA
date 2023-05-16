@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Services
+namespace Core.Domain
 {
-    public class RestClient
+    public class Geo
     {
+        public string? Lat { get; set; }
+        public string? Lng { get; set; }
     }
 }

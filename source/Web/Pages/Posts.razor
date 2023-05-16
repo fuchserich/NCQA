@@ -1,0 +1,52 @@
+﻿@page "/posts"
+
+<PageTitle>Posts</PageTitle>
+
+@using Core.Domain
+@using Core.Services
+@inject IJSONPlaceHolderService jsonPlaceHolderService
+
+<div class="card mb-2">
+    <div class="card-body">
+        <h5 class="card-title"><input type="text" class="form-control" placeholder="Title" @bind="_addTitle" @bind:event="oninput" /></h5>
+        <p class="card-text"><textarea class="form-control" placeholder="Body" @bind="_addBody" @bind:event="oninput"></textarea></p>
+        <button class="btn btn-primary float-end" @onclick="AddPost">Add Post</button>
+    </div>
+</div>
+
+@if (_posts != null)
+{
+    @foreach (var post in _posts)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title"><b>@post.Title</b></h5>
+                <p class="card-text">@post.Body</p>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private List<Core.Domain.Posts>? _posts;
+    private string? _addTitle;
+    private string? _addBody;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPosts(); 
+    }
+
+    private async Task GetPosts()
+    {
+        var result = await jsonPlaceHolderService.GetPostsForUserAsync(1);
+        _posts = await result.Content.ReadFromJsonAsync<List<Core.Domain.Posts>>();
+    }
+
+    private async Task AddPost()
+    {
+        var result = await jsonPlaceHolderService.AddPostAsync(_addTitle, _addBody);
+        var post = await result.Content.ReadFromJsonAsync<Core.Domain.Posts>();
+        _posts = _posts.Prepend(post).ToList();
+    }
+}

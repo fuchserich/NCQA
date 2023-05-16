@@ -1,0 +1,112 @@
+﻿@page "/user"
+
+<PageTitle>User</PageTitle>
+
+@using Core.Domain
+@using Core.Services
+@inject IJSONPlaceHolderService jsonPlaceHolderService
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <b>Name</b>
+        </div>
+        <div class="col-9">
+            @_user?.Name
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <b>Username</b>
+        </div>
+        <div class="col-9">
+            @_user?.UserName
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <b>Phone Number</b>
+        </div>
+        <div class="col-9">
+            @_user?.Phone
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <b>Email</b>
+        </div>
+        <div class="col-9">
+            @_user?.Email
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <b>Address</b>
+        </div>
+        <div class="col-9">
+            <div class="row">
+                <div class="col-3">
+                    <b>Street</b>
+                </div>
+                <div class="col-9">
+                    @_user?.Address?.Street
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <b>Suite</b>
+                </div>
+                <div class="col-9">
+                    @_user?.Address?.Suite
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <b>City</b>
+                </div>
+                <div class="col-9">
+                    @_user?.Address?.City
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <b>Zip Code</b>
+                </div>
+                <div class="col-9">
+                    @_user?.Address?.ZipCode
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <b>Website</b>
+        </div>
+        <div class="col-9">
+            @_user?.WebSite
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <b>Company</b>
+        </div>
+        <div class="col-9">
+            @_user?.Company?.Name
+        </div>
+    </div>
+</div>
+
+@code {
+    private Core.Domain.User? _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+       await GetUser(); 
+    }
+
+    private async Task GetUser()
+    {
+        var result = await jsonPlaceHolderService.GetUserAsync(1);
+        _user = await result.Content.ReadFromJsonAsync<Core.Domain.User>();
+    }
+}
