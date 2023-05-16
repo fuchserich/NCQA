@@ -1,0 +1,31 @@
+﻿@page "/photo/{id:int}"
+
+<PageTitle>Photo</PageTitle>
+
+@using Core.Domain
+@using Core.Services
+@inject IJSONPlaceHolderService jsonPlaceHolderService
+
+@if (_photo != null)
+{
+    <div class="row">
+        <img src="@_photo.Url" />
+    </div>
+}
+
+@code {
+    private Photos? _photo;
+    [Parameter]
+    public int id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPhoto(); 
+    }
+
+    private async Task GetPhoto()
+    {
+        var result = await jsonPlaceHolderService.GetPhotoAsync(id);
+        _photo = await result.Content.ReadFromJsonAsync<Photos>();
+    }
+}

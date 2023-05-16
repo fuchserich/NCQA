@@ -1,0 +1,38 @@
+﻿@page "/albums"
+
+<PageTitle>Albums</PageTitle>
+
+@using Core.Domain
+@using Core.Services
+@inject IJSONPlaceHolderService jsonPlaceHolderService
+
+@if (_albums != null)
+{
+    <div class="row">
+        @foreach (var album in _albums)
+        {
+            <div class="col-2">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5><a href="/albumphotos/@album.Id" class="card-title"><b>@album.Title</b></a></h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Album>? _albums;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAlbums(); 
+    }
+
+    private async Task GetAlbums()
+    {
+        var result = await jsonPlaceHolderService.GetAlbumsByUserAsync(1);
+        _albums = await result.Content.ReadFromJsonAsync<List<Album>>();
+    }
+}

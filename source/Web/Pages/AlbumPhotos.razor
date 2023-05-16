@@ -1,0 +1,53 @@
+﻿@page "/albumphotos/{id:int}"
+
+<PageTitle>Album Photos</PageTitle>
+
+@using Core.Domain
+@using Core.Services
+@using Flurl
+@inject IJSONPlaceHolderService jsonPlaceHolderService
+@inject NavigationManager _nav
+
+@if (_photos != null)
+{
+    <div class="row">
+        @foreach (var photo in _photos)
+        {
+            <div class="col-2" @onclick="() => showPhoto(photo)">
+                <div class="card mb-2">
+                    <img class="card-img-top" src="@photo.ThumbnailUrl" />
+                    <div class="card-body">
+                        <h5 class="card-title">@photo.Title</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Photos>? _photos;
+    [Parameter]
+    public int id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPhotos(); 
+    }
+
+    private async Task GetPhotos()
+    {
+        var result = await jsonPlaceHolderService.GetPhotosByAlbumAsync(id);
+        _photos = await result.Content.ReadFromJsonAsync<List<Photos>>();
+    }
+
+    private async Task showPhoto(Photos photo)
+    {
+        var uri = _nav.BaseUri
+            .AppendPathSegment("photo")
+            .AppendPathSegment(photo.Id)
+            .ToUri();
+
+        _nav.NavigateTo(uri.ToString());
+    }
+}
