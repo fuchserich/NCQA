@@ -1,11 +1,5 @@
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Infrastructure.Services;
-using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace Tests
 {
@@ -39,7 +33,7 @@ namespace Tests
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
               .ReturnsAsync(response);
-            var httpClient = new HttpClient(_handlerMock.Object) { BaseAddress = new Uri("http://test.com/")};
+            var httpClient = new HttpClient(_handlerMock.Object) { BaseAddress = new Uri("http://test.com/") };
             var service = new JSONPlaceHolderService(httpClient);
 
             var retrievedPosts = await service.GetPostsAsync();
